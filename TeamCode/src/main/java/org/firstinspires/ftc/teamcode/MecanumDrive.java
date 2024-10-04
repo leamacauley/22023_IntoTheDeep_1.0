@@ -53,6 +53,10 @@ import java.util.List;
 
 @Config
 public final class MecanumDrive {
+    public void setMode(DcMotor.RunMode runWithoutEncoder) {
+        
+    }
+
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -277,6 +281,7 @@ public final class MecanumDrive {
                 yPoints[i] = p.position.y;
             }
         }
+
 
         @Override
         public boolean run(@NonNull TelemetryPacket p) {

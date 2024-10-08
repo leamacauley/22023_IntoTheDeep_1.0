@@ -10,12 +10,20 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
+/**
+ * Controls Reference
+ *      y = triangle
+ *      b = circle
+ *      a = x
+ *      x = square
+ */
 
 //@Config
 @TeleOp (name = "DRIVE CODE - FIELD CENTRIC")
 public class Drive extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
+        int highPos = 1000;
 
         BaseRobot robot = new BaseRobot();
 
@@ -67,6 +75,14 @@ public class Drive extends LinearOpMode {
             robot.leftRear.setPower(backLeftPower);
             robot.rightFront.setPower(frontRightPower);
             robot.rightRear.setPower(backRightPower);
+
+            if(gamepad2.y) {
+                robot.liftToPos(highPos,0.7);
+            }
+            if(gamepad2.a) {
+                robot.liftToPos(0, 0.7);
+            }
+
 
         }
     }

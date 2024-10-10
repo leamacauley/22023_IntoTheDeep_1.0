@@ -82,6 +82,12 @@ public class Drive extends LinearOpMode {
             if(gamepad2.a) {
                 robot.liftToPos(0, 0.7);
             }
+            if(gamepad2.right_bumper) {
+                robot.runIntake(0.7);
+            }
+            if(gamepad2.left_bumper) {
+                robot.grabFromCenter();
+            }
 
 
         }

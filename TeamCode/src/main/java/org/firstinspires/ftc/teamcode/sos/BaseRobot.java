@@ -146,28 +146,43 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
         public void grabFromCenter() {
-            runIntake(0.8);
-            extendToPos(1000, 0.3);
             if (sensorBlocked()) {  // make this simultaneous
                 stopIntake();
                 extendToPos(0, 0.7);
             }
-            stopIntake();
-            extendToPos(0,0.7);
-
+            else {
+                runIntake(0.8);
+                extendToPos(1000, 0.3);
+            }
         }
 
         /**
-         * Determines if there is a sample in the intake
-         *
+         * Determines if there's something blue, yellow, or red covering the sensor.
          * @return
          */
         public boolean sensorBlocked() {
-            float hue = this.getHue();
-            telemetry.addData("Average hue", hue);
-            telemetry.update();
+            float[] colorValues = getColorValues();
+            double red = colorValues[0];
+            double blue = colorValues[1];
+            double green = colorValues[2];
 
-            return true;
+            // Define thresholds to detect colors
+            double redThreshold = 0.3;  // Example threshold for red
+            double blueThreshold = 0.3; // Example threshold for blue
+            double greenThreshold = 0.3; // Example threshold for green
+
+            // You may need to adjust these thresholds based on your sensor and conditions
+
+            // Check if any color value is above the threshold
+            if (red > redThreshold && red > blue && red > green) {
+                return true;  // Red color detected
+            } else if (blue > blueThreshold && blue > red && blue > green) {
+                return true;  // Blue color detected
+            } else if (green > greenThreshold && green > red && green > blue) {
+                return true;  // Yellow color detected (because yellow is a mix of red and green)
+            }
+
+            return false;  // No color detected or not in the threshold range
         }
 
         public float[] getColorValues() {

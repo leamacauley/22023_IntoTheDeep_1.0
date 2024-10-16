@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         /* Public Sensors */
         public DigitalChannel touch = null;
-        public NormalizedColorSensor colorSensor = null;
+        //public NormalizedColorSensor colorSensor = null;
 
 
         // For Encoder Functions
@@ -72,7 +72,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightLift = hwMap.dcMotor.get("rightLift");
             leftLift = hwMap.dcMotor.get("leftLift");
 
-            colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor");
+            //colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor");
 
             // motor directions
             leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -84,6 +84,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             leftFront.setPower(0);
             rightFront.setPower(0);
             leftRear.setPower(0);
+            rightRear.setPower(0);
 
             // Set all motors to run without encoders.
             // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -118,7 +119,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
         /**
-         * Lifts slider to position
+         * Lifts slider to position skibidi toilet
          *
          * @param pos
          * @param speed
@@ -145,7 +146,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        public void grabFromCenter() {
+        /**
+        public void grabFromCenterWithSensor() {
             if (sensorBlocked()) {  // make this simultaneous
                 stopIntake();
                 extendToPos(0, 0.7);
@@ -155,11 +157,16 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
                 extendToPos(1000, 0.3);
             }
         }
+        public void extend() {
 
-        /**
+        }
+
+
          * Determines if there's something blue, yellow, or red covering the sensor.
          * @return
          */
+
+        /**
         public boolean sensorBlocked() {
             float[] colorValues = getColorValues();
             double red = colorValues[0];
@@ -184,6 +191,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
             return false;  // No color detected or not in the threshold range
         }
+
 
         public float[] getColorValues() {
             NormalizedRGBA colors = colorSensor.getNormalizedColors();
@@ -217,6 +225,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             Color.colorToHSV(colors.toColor(), hsvValues);
             return hsvValues[0];
         }
+         **/
 
     }
 

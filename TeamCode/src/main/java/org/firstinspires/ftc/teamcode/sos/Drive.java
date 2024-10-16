@@ -86,10 +86,8 @@ public class Drive extends LinearOpMode {
                 robot.runIntake(0.7);
             }
             if(gamepad2.left_bumper) {
-                robot.grabFromCenter();
+                robot.extendToPos(500,0.5);
             }
-
-
         }
     }
 }

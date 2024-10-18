@@ -31,9 +31,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         public DcMotor extender = null;
 
-        //public Servo shoulder = null;
+        public Servo shoulder = null;
 
-        //public Servo wrist = null;
+        public Servo wrist = null;
 
         /* Public Sensors */
         public DigitalChannel touch = null;
@@ -76,8 +76,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightLift = hwMap.dcMotor.get("rightLift");
             leftLift = hwMap.dcMotor.get("leftLift");
 
-            //shoulder = hwMap.servo.get("shoulder");
-            //wrist = hwMap.servo.get("wrist");
+            shoulder = hwMap.servo.get("shoulder");
+            wrist = hwMap.servo.get("wrist");
+
 
             //colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor");
 
@@ -139,6 +140,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightLift.setPower(speed);
             leftLift.setPower(speed);
             rightLift.setTargetPosition(pos);
+            leftLift.setTargetPosition(pos);
             if(pos < 0) {
                 pos = 0;
             }
@@ -156,19 +158,19 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         public void extendToPos(int pos, double speed) {
             extender.setPower(speed);
-            extender.setTargetPosition(-pos);
             if(pos < 0) {
                 pos = 0;
             }
+            extender.setTargetPosition(-pos);
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         public void rotateShoulder(double pos) {
-            //shoulder.setPosition(pos);
+            shoulder.setPosition(pos);
         }
 
         public void rotateWrist(double pos) {
-            //wrist.setPosition(pos);
+            wrist.setPosition(pos);
         }
 
 

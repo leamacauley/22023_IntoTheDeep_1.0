@@ -103,15 +103,16 @@ public class DriveMarist extends OpMode {
         robot.rightFront.setPower(rightFrontPower * SPEED_CONTROL);
         robot.rightRear.setPower(rightRearPower * SPEED_CONTROL);
 
-        if(gamepad1.y) {
+        if(gamepad1.dpad_left) {
             robot.liftToPos(50,0.7);
         }
-        if(gamepad1.y) {
-            robot.liftToPos(100,0.7);
+        if(gamepad1.dpad_up) {
+            robot.liftToPos(500,0.7);
         }
-        if(gamepad1.a) {
+        if(gamepad1.dpad_down) {
             robot.liftToPos(0, 0.7);
         }
+
 
         if(gamepad2.right_bumper) {
             robot.runIntake(0.7);
@@ -123,6 +124,23 @@ public class DriveMarist extends OpMode {
             robot.runIntake(-0.7);
         }
 
+        if(gamepad2.y) {
+            robot.rotateShoulder(0.0);
+        }
+        if(gamepad2.b) {
+            robot.rotateShoulder(0.5);
+        }
+        if(gamepad2.a) {    // bring down
+            robot.rotateShoulder(0.85);
+        }
+
+        if(gamepad2.dpad_up) {
+            robot.rotateWrist(0.4);
+        }
+        if(gamepad2.dpad_down) {
+            robot.rotateWrist(0.25);
+        }
+
 
         // controlling extender
         double extendPower = gamepad2.right_trigger - gamepad2.left_trigger;
@@ -132,14 +150,14 @@ public class DriveMarist extends OpMode {
         if(extendPower < -0.1) {
             extendPos-= (gamepad2.left_trigger * 80);
         }
-        if(extendPos < 0) {
-            extendPos = 0;
+        if(extendPos < 135) {
+            extendPos = 135;
         }
         if(extendPos > 2210) {  // safety code
             extendPos = 2210;
         }
         robot.extender.setTargetPosition(extendPos);
-        telemetry.addData("Say", "ExtendPos" + extendPos);
+        telemetry.addData("Say", "ExtendPos: " + extendPos);
         robot.extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.extender.setPower(0.8);
     }

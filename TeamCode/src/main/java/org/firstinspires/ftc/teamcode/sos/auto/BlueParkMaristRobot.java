@@ -51,8 +51,7 @@ public class BlueParkMaristRobot extends LinearOpMode {
         pointTurnDegrees(0.7,90,300);
         delay(0.5);
         strafeInches(0.4,20,300);
-
-
+        delay(0.5);
 
     }   // end runOpMode()
 

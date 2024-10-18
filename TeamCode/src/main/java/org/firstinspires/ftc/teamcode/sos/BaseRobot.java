@@ -31,6 +31,10 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         public DcMotor extender = null;
 
+        //public Servo shoulder = null;
+
+        //public Servo wrist = null;
+
         /* Public Sensors */
         public DigitalChannel touch = null;
         //public NormalizedColorSensor colorSensor = null;
@@ -72,6 +76,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightLift = hwMap.dcMotor.get("rightLift");
             leftLift = hwMap.dcMotor.get("leftLift");
 
+            //shoulder = hwMap.servo.get("shoulder");
+            //wrist = hwMap.servo.get("wrist");
+
             //colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor");
 
             // motor directions
@@ -79,6 +86,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightFront.setDirection(DcMotor.Direction.FORWARD);
             leftRear.setDirection(DcMotor.Direction.REVERSE);
             rightRear.setDirection(DcMotor.Direction.FORWARD);
+
+            intake.setDirection(DcMotorSimple.Direction.REVERSE);
+            extender.setDirection(DcMotorSimple.Direction.REVERSE);
 
             // Set all motors to zero power
             leftFront.setPower(0);
@@ -92,6 +102,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         }
 
         /**
@@ -128,6 +139,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightLift.setPower(speed);
             leftLift.setPower(speed);
             rightLift.setTargetPosition(pos);
+            if(pos < 0) {
+                pos = 0;
+            }
             leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -142,11 +156,23 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         public void extendToPos(int pos, double speed) {
             extender.setPower(speed);
-            extender.setTargetPosition(pos);
+            extender.setTargetPosition(-pos);
+            if(pos < 0) {
+                pos = 0;
+            }
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        /**
+        public void rotateShoulder(double pos) {
+            //shoulder.setPosition(pos);
+        }
+
+        public void rotateWrist(double pos) {
+            //wrist.setPosition(pos);
+        }
+
+
+        /**   COLOR SENSOR
         public void grabFromCenterWithSensor() {
             if (sensorBlocked()) {  // make this simultaneous
                 stopIntake();

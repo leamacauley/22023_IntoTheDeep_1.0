@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 
 //@Config
-@TeleOp (name = "DRIVE CODE - ROBOT CENTRIC")
+@TeleOp (name = "DRIVE CODE: ROBOT CENTRIC (THIS ONE)")
 
 public class DriveMarist extends OpMode {
 
@@ -21,11 +21,7 @@ public class DriveMarist extends OpMode {
     double clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
 
-    int armPosLeft = 0;           // starts armPos (of slider 1) at 0
-    int armPosRight = 0;          // for slider 2
-
-    int climbPos = -50;           // for climber
-
+    int extendPos = 0;
     private double SPEED_CONTROL = 0.8;
 
     /*
@@ -52,10 +48,10 @@ public class DriveMarist extends OpMode {
         robot.rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        armPosLeft = robot.leftLift.getCurrentPosition();
-        armPosRight = robot.rightLift.getCurrentPosition();
+        robot.extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
+        extendPos = robot.extender.getCurrentPosition();
 
     }
 
@@ -95,7 +91,7 @@ public class DriveMarist extends OpMode {
 
         leftX = gamepad1.left_stick_x;
         leftY = gamepad1.left_stick_y ;
-        rightX = gamepad1.right_stick_x ;
+        rightX = -gamepad1.right_stick_x;
 
         double leftRearPower = (leftY + leftX - rightX);
         double leftFrontPower = (leftY - leftX - rightX);
@@ -108,7 +104,10 @@ public class DriveMarist extends OpMode {
         robot.rightRear.setPower(rightRearPower * SPEED_CONTROL);
 
         if(gamepad1.y) {
-            robot.liftToPos(1000,0.7);
+            robot.liftToPos(50,0.7);
+        }
+        if(gamepad1.y) {
+            robot.liftToPos(100,0.7);
         }
         if(gamepad1.a) {
             robot.liftToPos(0, 0.7);
@@ -120,13 +119,29 @@ public class DriveMarist extends OpMode {
         if(gamepad2.left_bumper) {
             robot.stopIntake();
         }
+        if(gamepad2.x){
+            robot.runIntake(-0.7);
+        }
 
-        if(gamepad2.y) {
-            robot.extendToPos(500,0.5);
+
+        // controlling extender
+        double extendPower = gamepad2.right_trigger - gamepad2.left_trigger;
+        if(extendPower > 0.1) {
+            extendPos+= (gamepad2.right_trigger * 80);
         }
-        if(gamepad2.a) {
-            robot.extendToPos(0,0.6);
+        if(extendPower < -0.1) {
+            extendPos-= (gamepad2.left_trigger * 80);
         }
+        if(extendPos < 0) {
+            extendPos = 0;
+        }
+        if(extendPos > 2210) {  // safety code
+            extendPos = 2210;
+        }
+        robot.extender.setTargetPosition(extendPos);
+        telemetry.addData("Say", "ExtendPos" + extendPos);
+        robot.extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.extender.setPower(0.8);
     }
 
     /*

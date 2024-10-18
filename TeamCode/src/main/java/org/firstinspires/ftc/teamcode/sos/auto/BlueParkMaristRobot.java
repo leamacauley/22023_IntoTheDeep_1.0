@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.sos.BaseRobot;
  */
 @Autonomous(name="Blue Park", group="Auto")
 
-public class BluePark extends LinearOpMode {
+public class BlueParkMaristRobot extends LinearOpMode {
     // For Encoder Functions
     private double     COUNTS_PER_MOTOR_REV          = 1440 ;    // eg: TETRIX Motor Encoder
     private final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 
 //@Config
-@TeleOp (name = "DRIVE CODE: ROBOT CENTRIC (THIS ONE)")
+@TeleOp (name = "DRIVE CODE: ROBOT CENTRIC")
 
 public class DriveMarist extends OpMode {
 
@@ -103,25 +103,37 @@ public class DriveMarist extends OpMode {
         robot.rightFront.setPower(rightFrontPower * SPEED_CONTROL);
         robot.rightRear.setPower(rightRearPower * SPEED_CONTROL);
 
-        if(gamepad1.dpad_left) {
-            robot.liftToPos(50,0.7);
-        }
+        int currentSlidePos = robot.leftLift.getCurrentPosition();
         if(gamepad1.dpad_up) {
-            robot.liftToPos(500,0.7);
+            robot.liftToPos(currentSlidePos+=100,0.8);
+        }
+
+        if(gamepad1.dpad_left) {
+            robot.liftToPos(1500,0.8);
         }
         if(gamepad1.dpad_down) {
-            robot.liftToPos(0, 0.7);
+            robot.liftToPos(0, 0.8);
+        }
+        if(gamepad1.dpad_right) {
+            robot.liftToPos(3000,0.8);
+        }
+
+        if(gamepad1.right_trigger >= 0.1) {
+            SPEED_CONTROL = 0.3;
+        }
+        else{
+            SPEED_CONTROL = 0.8;
         }
 
 
         if(gamepad2.right_bumper) {
-            robot.runIntake(0.7);
+            robot.runIntake(0.8);
         }
         if(gamepad2.left_bumper) {
             robot.stopIntake();
         }
         if(gamepad2.x){
-            robot.runIntake(-0.7);
+            robot.runIntake(-0.8);
         }
 
         if(gamepad2.y) {
@@ -145,14 +157,12 @@ public class DriveMarist extends OpMode {
         // controlling extender
         double extendPower = gamepad2.right_trigger - gamepad2.left_trigger;
         if(extendPower > 0.1) {
-            extendPos+= (gamepad2.right_trigger * 80);
+            extendPos+= (gamepad2.right_trigger * 100);
         }
         if(extendPower < -0.1) {
-            extendPos-= (gamepad2.left_trigger * 80);
+            extendPos-= (gamepad2.left_trigger * 100);
         }
-        if(extendPos < 135) {
-            extendPos = 135;
-        }
+
         if(extendPos > 2210) {  // safety code
             extendPos = 2210;
         }

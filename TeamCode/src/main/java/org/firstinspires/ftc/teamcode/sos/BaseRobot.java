@@ -88,6 +88,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             leftRear.setDirection(DcMotor.Direction.REVERSE);
             rightRear.setDirection(DcMotor.Direction.FORWARD);
 
+            leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
+
             intake.setDirection(DcMotorSimple.Direction.REVERSE);
             extender.setDirection(DcMotorSimple.Direction.REVERSE);
 

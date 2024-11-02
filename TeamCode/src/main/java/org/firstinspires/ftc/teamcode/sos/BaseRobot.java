@@ -164,12 +164,13 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         public void runIntake() {
             intake.setPosition(0.0);
         }
-        public void automateTransfer() {
-
-        }
 
         public void openClaw() {
-            claw.setPosition(0.1);
+            claw.setPosition(0.4);
+        }
+
+        public void closeClaw() {
+            claw.setPosition(0.7);
         }
 
         public void stopIntake() {
@@ -193,18 +194,6 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             wrist.setPosition(pos);
         }
 
-
-
-        public void grabFromCenterWithSensor() {
-            if (sensorBlocked()) {  // make this simultaneous
-                stopIntake();
-                // add
-            }
-            else {
-                runIntake();
-                // add
-            }
-        }
 
 
          /* Determines if there's something blue, yellow, or red covering the sensor.

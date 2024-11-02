@@ -23,6 +23,9 @@ public class Drive3 extends OpMode {
     int armRotPos = 0;
     private double SPEED_CONTROL = 0.8;
 
+    boolean intakeOn = false;
+    boolean grasping = false;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -85,6 +88,22 @@ public class Drive3 extends OpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
 
+
+        /**
+         * UPDATED CONTROLS
+         *      REFER TO GOOGLE DRIVE FOR ASSIGNMENTS
+         */
+
+        // GAMEPAD 1 ***********************************************************
+
+        // SLOW MODE
+        if(gamepad1.right_trigger >= 0.1) {
+            SPEED_CONTROL = 0.3;
+        }
+        else{
+            SPEED_CONTROL = 0.8;
+        }
+
         // Movement
         double leftX;
         double leftY;
@@ -104,37 +123,10 @@ public class Drive3 extends OpMode {
         robot.rightFront.setPower(rightFrontPower * SPEED_CONTROL);
         robot.rightRear.setPower(rightRearPower * SPEED_CONTROL);
 
-        // SLOW MODE
-        if(gamepad1.right_trigger >= 0.1) {
-            SPEED_CONTROL = 0.3;
-        }
-        else{
-            SPEED_CONTROL = 0.8;
-        }
 
-        // SLIDER - left & right trigger, dpad
-        int currentSlidePos = robot.leftLift.getCurrentPosition();
-        if(gamepad1.dpad_up) {
-            robot.liftToPos(currentSlidePos+=100,0.8);
-        }
-        if(gamepad2.dpad_right) {
-            robot.liftToPos(1500,0.8);
-        }
-        if(gamepad2.dpad_down) {
-            robot.liftToPos(0, 0.8);
-        }
-        if(gamepad2.dpad_right) {
-            robot.liftToPos(3000,0.8);
-        }
+        // GAMEPAD 2 ***********************************************************
 
-        double slidePower = gamepad2.right_trigger - gamepad2.left_trigger;
-        if(slidePower > 0.1) {
-            slidePos += (gamepad2.right_trigger * 100);
-        }
-        if(slidePower < -0.1) {
-            slidePos -= (gamepad2.left_trigger * 100);
-        }
-
+        // Slider
         if(slidePos > 3210) {  // safety code
             slidePos = 2210;
         }
@@ -163,62 +155,85 @@ public class Drive3 extends OpMode {
         robot.leftLift.setPower(0.8);
         robot.rightLift.setPower(0.8);
 
-        // RUMBLE
-        if(robot.sensorBlocked()){
-            gamepad1.rumble(10);
-            gamepad2.rumble(10);
+
+        // Slider
+        double slidePower = gamepad2.right_trigger - gamepad2.left_trigger;
+        if(slidePower > 0.1) {
+            slidePos += (gamepad2.right_trigger * 100);
+        }
+        if(slidePower < -0.1) {
+            slidePos -= (gamepad2.left_trigger * 100);
         }
 
-        // INTAKE
-        if(gamepad2.right_bumper) { // intake
-            robot.runIntake();
-            while(robot.sensorBlocked()){
-                robot.stopIntake();
-                telemetry.addData("Color: ", "true");
-            }
+        if(slidePos > 3210) {  // safety code
+            slidePos = 2210;
         }
-        if(gamepad2.left_bumper) {  // stop
-            robot.intake.setPosition(0.5);
-        }
-        if(gamepad2.x){ // outtake
-            robot.intake.setPosition(1.0);
+        if(slidePos < 0) {
+            slidePos = 0;
         }
 
-        // ARM
-        if(gamepad2.y) {    //INTAKE POS
+        // Intake Arm
+        if(gamepad2.dpad_down) {    //INTAKE POS
             robot.rotateArm(1600, 0.7);
             robot.shoulder.setPosition(0.3);
         }
-        if(gamepad2.b) {    // TRANSFER POS
-            robot.rotateArm(400,0.6);
-        }
-        if(gamepad2.a) {    // ZERO POS
+
+        if(gamepad2.dpad_up) {    // ZERO POS
             robot.rotateArm(0,0.7);
             robot.shoulder.setPosition(0.9);
         }
 
-        if(gamepad1.left_bumper){   // close
-            robot.claw.setPosition(0.7);
-        }
-        if(gamepad1.right_bumper) { // open
-            robot.claw.setPosition(0.4);
+        // Intake
+        if(gamepad2.dpad_right) {
+            if(this.intakeOn) { // toggle
+                robot.runIntake();
+                intakeOn = false;
+                return;
+            }
+            else {
+                robot.stopIntake();
+                intakeOn = true;
+                return;
+            }
+
         }
 
-        // HINGE
-        if(gamepad1.dpad_up){
-            robot.hinge.setPosition(0.2);
+        // Grasper
+        if(gamepad2.dpad_left) { // toggle
+            if(this.grasping) {
+                robot.openClaw();
+                grasping = false;
+                return;
+            }
+            else {
+                robot.closeClaw();
+                grasping = true;
+                return;
+            }
         }
-        if(gamepad1.dpad_down) {
-            robot.claw.setPosition(0.7);
-            robot.hinge.setPosition(0.5);
+
+        // Scoring Controls
+        if(gamepad2.left_bumper) {  // raise slider and raise pivot to high pos
+            robot.liftToPos(1200,0.7);
+            robot.hinge.setPosition(0.1);
         }
-        if(gamepad1.dpad_left) {
-            robot.hinge.setPosition(0.4);
+        if(gamepad2.right_bumper) { // low pos
+           robot.hinge.setPosition(0.1);
         }
-        if(gamepad1.dpad_right) {   // PUT ON BAR
-            robot.hinge.setPosition(0.4);
-            robot.waitForTick(1000);
+        if(gamepad2.a) {
+            robot.liftToPos(0,0.8);
+            robot.waitForTick(500);
             robot.openClaw();
+        }
+
+        // Spec Grab controls
+        if(gamepad2.y) {
+            robot.hinge.setPosition(0.4);
+        }
+
+        // Color sensor
+        if(robot.sensorBlocked()) {
+            robot.stopIntake();
         }
 
         robot.wrist.setPosition(0.0);

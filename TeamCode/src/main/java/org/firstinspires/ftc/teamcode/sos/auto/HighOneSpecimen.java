@@ -12,9 +12,9 @@ import org.firstinspires.ftc.teamcode.sos.BaseRobot;
  * Sample parking method using the Marist Base Robot Code
  * !!!NON-ROADRUNNER!!!
  */
-@Autonomous(name="Observation Park", group="Auto")
+@Autonomous(name="Galvanized Square Steel", group="Auto")
 
-public class ObservationZonePark extends LinearOpMode {
+public class HighOneSpecimen extends LinearOpMode {
     // For Encoder Functions
     private double     COUNTS_PER_MOTOR_REV          = 1440 ;    // eg: TETRIX Motor Encoder
     private final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
@@ -40,18 +40,32 @@ public class ObservationZonePark extends LinearOpMode {
 
         waitForStart();
 
+        robot.claw.setPosition(0.7);
+        driveStraightInches(0.3,5,600);
+        robot.waitForTick(1000);
+        strafeInches(0.4,10,600);
+        robot.waitForTick(1000);
+        robot.liftToPos(1200,0.8);
+        robot.hinge.setPosition(0.1);
+        robot.waitForTick(1000);
+        driveStraightInches(0.3,4.5,1000);
+        robot.waitForTick(1000);
+        //robot.hinge.setPosition(0.5);
+        robot.liftToPos(0,0.6);
+        robot.waitForTick(500);
+        robot.openClaw();
+        robot.waitForTick(300);
+        robot.liftToPos(0,0.8);
+        driveStraightInches(0.3,-5,600);
+        robot.waitForTick(1000);
+        robot.claw.setPosition(0.7);
+        //strafeInches(0.4,-10,600);
 
 
         // Autonomous Finished
         telemetry.addData("Path", "Complete");
         telemetry.update();
 
-        driveStraightInches(0.5,10,300);
-        robot.runIntake();
-        delay(1.0);
-        robot.stopIntake();
-        delay(0.2);
-        driveStraightInches(0.4,-3,300);
 
     }   // end runOpMode()
 

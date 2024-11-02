@@ -27,17 +27,20 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         public DcMotor rightLift = null;
         public DcMotor leftLift = null;
 
-        public DcMotor intake = null;
-
-        public DcMotor extender = null;
+        public DcMotor arm = null;
 
         public Servo shoulder = null;
 
         public Servo wrist = null;
 
+        public Servo intake = null;
+        public Servo claw = null;
+
+        public Servo hinge = null;
+
         /* Public Sensors */
-        public DigitalChannel touch = null;
-        //public NormalizedColorSensor colorSensor = null;
+
+        public NormalizedColorSensor colorSensor = null;
 
 
         // For Encoder Functions
@@ -70,14 +73,19 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             leftRear = hwMap.dcMotor.get("leftrear");
             rightRear = hwMap.dcMotor.get("rightrear");
 
-            intake = hwMap.dcMotor.get("intake");
-            extender = hwMap.dcMotor.get("extender");
+            arm = hwMap.dcMotor.get("arm");
 
-            rightLift = hwMap.dcMotor.get("rightLift");
-            leftLift = hwMap.dcMotor.get("leftLift");
+            rightLift = hwMap.dcMotor.get("rightlift");
+            leftLift = hwMap.dcMotor.get("leftlift");
 
             shoulder = hwMap.servo.get("shoulder");
             wrist = hwMap.servo.get("wrist");
+
+            intake = hwMap.servo.get("intake");
+            claw = hwMap.servo.get("claw");
+            hinge = hwMap.servo.get("hinge");
+
+            colorSensor = (NormalizedColorSensor) hwMap.colorSensor.get("color");
 
 
             //colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor");
@@ -91,8 +99,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
             rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
 
-            intake.setDirection(DcMotorSimple.Direction.REVERSE);
-            extender.setDirection(DcMotorSimple.Direction.REVERSE);
+            arm.setDirection(DcMotorSimple.Direction.FORWARD);
+
 
             // Set all motors to zero power
             leftFront.setPower(0);
@@ -106,6 +114,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         }
 
@@ -134,7 +144,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
         /**
-         * Lifts slider to position skibidi toilet
+         * Lifts slider to position
          *
          * @param pos
          * @param speed
@@ -151,21 +161,28 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        public void runIntake(double speed) {
-            intake.setPower(speed);
+        public void runIntake() {
+            intake.setPosition(0.0);
+        }
+        public void automateTransfer() {
+
+        }
+
+        public void openClaw() {
+            claw.setPosition(0.1);
         }
 
         public void stopIntake() {
-            intake.setPower(0);
+            intake.setPosition(0.5);
         }
 
-        public void extendToPos(int pos, double speed) {
-            extender.setPower(speed);
+        public void rotateArm(int pos, double speed) {
+            arm.setPower(speed);
             if(pos < 0) {
                 pos = 0;
             }
-            extender.setTargetPosition(-pos);
-            extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            arm.setTargetPosition(pos);
+            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         public void rotateShoulder(double pos) {
@@ -177,27 +194,22 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
 
-        /**   COLOR SENSOR
+
         public void grabFromCenterWithSensor() {
             if (sensorBlocked()) {  // make this simultaneous
                 stopIntake();
-                extendToPos(0, 0.7);
+                // add
             }
             else {
-                runIntake(0.8);
-                extendToPos(1000, 0.3);
+                runIntake();
+                // add
             }
         }
-        public void extend() {
-
-        }
 
 
-         * Determines if there's something blue, yellow, or red covering the sensor.
+         /* Determines if there's something blue, yellow, or red covering the sensor.
          * @return
          */
-
-        /**
         public boolean sensorBlocked() {
             float[] colorValues = getColorValues();
             double red = colorValues[0];
@@ -256,7 +268,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             Color.colorToHSV(colors.toColor(), hsvValues);
             return hsvValues[0];
         }
-         **/
+
 
     }
 

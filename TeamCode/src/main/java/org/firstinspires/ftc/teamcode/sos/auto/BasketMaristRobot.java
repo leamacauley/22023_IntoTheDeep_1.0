@@ -47,24 +47,7 @@ public class BasketMaristRobot extends LinearOpMode {
         telemetry.addData("Path", "Complete");
         telemetry.update();
 
-        robot.runIntake(0.7);
-        delay(1.0);
-        robot.stopIntake();
-        robot.extendToPos(135,0.7);
-        robot.rotateWrist(0.4);
-        strafeInches(0.5,20,300);
-        pointTurnDegrees(0.7,90,300);
-        strafeInches(0.4,10,300);
-        pointTurnDegrees(0.7,45,300);
-        robot.liftToPos(2000,0.8);
-        delay(1.0);
-        robot.rotateShoulder(0.1);
-        delay(1.0);
-        robot.rotateShoulder(0.5);
-        robot.liftToPos(0,0.7);
-        robot.extendToPos(0,0.7);
-        delay(1.0);
-        strafeInches(0.3,-5,300);
+
 
 
     }   // end runOpMode()
@@ -243,6 +226,87 @@ public class BasketMaristRobot extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
 
+    }
+    public void driveStraightInches(double speed,
+                                    double inches,
+                                    double timeoutS) {
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftRearTarget;
+        int newRightRearTarget;
+
+        // Reverse inches
+        inches = inches * -1;
+
+        robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Set to Limit of DRIVE_SPEED
+        if (Math.abs(speed) > DRIVE_SPEED) {
+            speed = DRIVE_SPEED; //
+        }
+
+        // Ensure that the opmode is still active
+        //if (opModeIsActive()) {
+        if (true) {       // Swapped out to include in MaristBaseRobot
+
+            // Determine new target position, and pass to motor controller
+            newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            newLeftRearTarget = robot.leftRear.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            newRightRearTarget = robot.rightRear.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+
+            //
+            robot.leftFront.setTargetPosition(newLeftFrontTarget);
+            robot.rightFront.setTargetPosition(newRightFrontTarget);
+            robot.leftRear.setTargetPosition(newLeftRearTarget);
+            robot.rightRear.setTargetPosition(newRightRearTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            period.reset();
+            robot.leftFront.setPower(Math.abs(speed));
+            robot.rightFront.setPower(Math.abs(speed));
+            robot.leftRear.setPower(Math.abs(speed));
+            robot.rightRear.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while ((period.seconds() < timeoutS) &&
+                    (robot.leftFront.isBusy() && robot.rightFront.isBusy() && robot.leftRear.isBusy() && robot.rightRear.isBusy() )) {
+                // Wait for Sequence to complete
+            }
+
+            // Stop all motion;
+            robot.leftFront.setPower(0);
+            robot.rightFront.setPower(0);
+            robot.leftRear.setPower(0);
+            robot.rightRear.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
     }
 
 }   // end class

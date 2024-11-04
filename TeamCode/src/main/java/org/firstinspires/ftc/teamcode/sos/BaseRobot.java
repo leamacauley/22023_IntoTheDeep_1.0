@@ -31,12 +31,12 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         public Servo shoulder = null;
 
-        public Servo wrist = null;
+        public Servo pivot = null;
 
         public Servo intake = null;
         public Servo claw = null;
 
-        public Servo hinge = null;
+        public DcMotor hingeClaw = null;
 
         /* Public Sensors */
 
@@ -79,11 +79,12 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             leftLift = hwMap.dcMotor.get("leftlift");
 
             shoulder = hwMap.servo.get("shoulder");
-            wrist = hwMap.servo.get("wrist");
 
             intake = hwMap.servo.get("intake");
             claw = hwMap.servo.get("claw");
-            hinge = hwMap.servo.get("hinge");
+            hingeClaw = hwMap.dcMotor.get("hinge");
+
+            pivot = hwMap.servo.get("pivot");
 
             colorSensor = (NormalizedColorSensor) hwMap.colorSensor.get("color");
 
@@ -190,8 +191,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             shoulder.setPosition(pos);
         }
 
-        public void rotateWrist(double pos) {
-            wrist.setPosition(pos);
+        public void rotateClaw(double pos) {
+            pivot.setPosition(pos);
         }
 
 
@@ -259,6 +260,22 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
 
+        // AUTOMATIONS
+        public void lowerIntake() {
+
+        }
+
+        public void raiseIntake() {
+
+        }
+
+        public void resetToZero() {
+
+        }
+
+        public void getSpecFromWall() {
+
+        }
     }
 
 

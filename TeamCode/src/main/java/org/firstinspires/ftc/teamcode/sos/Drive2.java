@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.sos;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 
 //@Config
+@Disabled
 @TeleOp (name = "DRIVE CODE: ROBOT CENTRIC")
 
 public class Drive2 extends OpMode {
@@ -73,6 +75,7 @@ public class Drive2 extends OpMode {
      */
     @Override
     public void loop() {
+        /**
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
@@ -169,6 +172,7 @@ public class Drive2 extends OpMode {
         telemetry.addData("Say", "ExtendPos: " + extendPos);
         //robot.extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //robot.extender.setPower(0.8);
+         **/
     }
 
     /*

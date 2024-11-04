@@ -78,6 +78,7 @@ public class Drive3 extends OpMode {
      */
     @Override
     public void loop() {
+        /**
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
@@ -92,9 +93,10 @@ public class Drive3 extends OpMode {
         /**
          * UPDATED CONTROLS
          *      REFER TO GOOGLE DRIVE FOR ASSIGNMENTS
-         */
+
 
         // GAMEPAD 1 ***********************************************************
+        robot.closeClaw();
 
         // SLOW MODE
         if(gamepad1.right_trigger >= 0.1) {
@@ -134,19 +136,6 @@ public class Drive3 extends OpMode {
             slidePos = 0;
         }
 
-        if(gamepad2.dpad_up) {
-            slidePos = 1800;
-        }
-        if(gamepad2.dpad_down) {
-            slidePos = 0;
-        }
-        if(gamepad2.dpad_right) {
-            slidePos = 1000;
-        }
-        if(gamepad2.dpad_left) {
-            robot.rotateArm(100,0.8);
-        }
-
         robot.leftLift.setTargetPosition(slidePos);
         robot.rightLift.setTargetPosition(slidePos);
         telemetry.addData("Say", "SlidePos: " + slidePos);
@@ -173,14 +162,26 @@ public class Drive3 extends OpMode {
         }
 
         // Intake Arm
+        /**
         if(gamepad2.dpad_down) {    //INTAKE POS
-            robot.rotateArm(1600, 0.7);
             robot.shoulder.setPosition(0.3);
+            robot.rotateArm(1000, 0.7);
         }
 
         if(gamepad2.dpad_up) {    // ZERO POS
             robot.rotateArm(0,0.7);
-            robot.shoulder.setPosition(0.9);
+            robot.shoulder.setPosition(0.5);
+        }
+        if(gamepad2.x) {
+            robot.shoulder.setPosition(0.3);
+        }
+
+
+        if(gamepad2.dpad_down) {
+            robot.openClaw();
+        }
+        if(gamepad2.dpad_up) {
+            robot.closeClaw();
         }
 
         // Intake
@@ -198,19 +199,6 @@ public class Drive3 extends OpMode {
 
         }
 
-        // Grasper
-        if(gamepad2.dpad_left) { // toggle
-            if(this.grasping) {
-                robot.openClaw();
-                grasping = false;
-                return;
-            }
-            else {
-                robot.closeClaw();
-                grasping = true;
-                return;
-            }
-        }
 
         // Scoring Controls
         if(gamepad2.left_bumper) {  // raise slider and raise pivot to high pos
@@ -228,6 +216,10 @@ public class Drive3 extends OpMode {
 
         // Spec Grab controls
         if(gamepad2.y) {
+            robot.hinge.setPosition(0.2);
+        }
+
+        if(gamepad2.b) {
             robot.hinge.setPosition(0.4);
         }
 
@@ -236,9 +228,11 @@ public class Drive3 extends OpMode {
             robot.stopIntake();
         }
 
-        robot.wrist.setPosition(0.0);
+        robot.wrist.setPosition(0.65);
 
+        */
     }
+
 
     /*
      * Code to run ONCE after the driver hits STOP

@@ -46,7 +46,7 @@ public class HighOneSpecimen extends LinearOpMode {
         strafeInches(0.4,10,600);
         robot.waitForTick(1000);
         robot.liftToPos(1200,0.8);
-        robot.hinge.setPosition(0.1);
+        //robot.extender.setPosition(0.1);
         robot.waitForTick(1000);
         driveStraightInches(0.3,4.5,1000);
         robot.waitForTick(1000);

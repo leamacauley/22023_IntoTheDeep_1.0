@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 
 //@Config
-@TeleOp (name = "DRIVE CODE V2: ROBOT CENTRIC")
+@TeleOp (name = "DRIVE CODE V3: ROBOT CENTRIC")
 
 public class Drive4 extends OpMode {
 
@@ -21,6 +21,8 @@ public class Drive4 extends OpMode {
 
     int slidePos = 0;
     int armRotPos = 0;
+
+    int highBucketPos = 2000;
     private double SPEED_CONTROL = 0.8;
 
     boolean intakeOn = false;
@@ -54,6 +56,8 @@ public class Drive4 extends OpMode {
         robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         armRotPos = robot.arm.getCurrentPosition();
+
+        robot.closeClaw();
 
     }
 
@@ -90,7 +94,7 @@ public class Drive4 extends OpMode {
 
 
          // GAMEPAD 1 ***********************************************************
-         robot.closeClaw();
+
 
          // SLOW MODE
          if(gamepad1.right_trigger >= 0.1) {
@@ -151,19 +155,44 @@ public class Drive4 extends OpMode {
          if(slidePos > 3210) {  // safety code
          slidePos = 2210;
          }
+
          if(slidePos < 0) {
          slidePos = 0;
          }
 
-         // Intake
+         if(gamepad2.right_bumper) {    // high bumper position
+            robot.liftToPos(highBucketPos,0.7);
+            // robot.rotateExtender(
+         }
 
+         if(gamepad2.left_bumper) { // low bumper position
+
+         }
+
+         // Intake
          if(gamepad2.dpad_down) {
-             robot.lowerIntake();   // todo
+             robot.lowerIntake();
          }
 
          if(gamepad2.dpad_up) {
-             robot.raiseIntake();   // todo
+             robot.raiseIntake();
          }
+
+         if(gamepad2.a) {   // toggle intake
+             if(this.intakeOn) {
+                 robot.stopIntake();
+                 intakeOn = false;
+             }
+             else {
+                 float intensity = robot.getIntensity();
+                 if(intensity < 0.0002) {
+                     robot.runIntake();
+                     intakeOn = true;
+                 }
+             }
+         }
+
+
          if(gamepad2.dpad_left) {
              robot.resetToZero();   // todo
          }
@@ -172,6 +201,23 @@ public class Drive4 extends OpMode {
          if(gamepad2.dpad_right) {
              robot.getSpecFromWall();   // todo
          }
+
+         // Grasper
+        if(gamepad2.x) {    //open grasper
+            robot.openClaw();
+        }
+        if(gamepad2.b) {    // close grasper
+            robot.closeClaw();
+        }
+
+        float trig = gamepad2.right_stick_y;
+        if(trig > 0) {
+            robot.rotateExtender((int) (robot.extender.getCurrentPosition() + trig), 0.6);
+        }
+
+        if(gamepad2.start) {
+            robot.transfer();
+        }
 
 
     }

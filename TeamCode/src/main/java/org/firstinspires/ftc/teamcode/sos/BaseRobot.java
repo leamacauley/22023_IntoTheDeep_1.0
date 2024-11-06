@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         public Servo intake = null;
         public Servo claw = null;
 
-        public DcMotor hingeClaw = null;
+        public DcMotor extender = null;
 
         /* Public Sensors */
 
@@ -68,25 +68,25 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             hwMap = ahwMap;
 
             // Define and Initialize Motors.  Assign Names that match the setup on the RC Phone
-            leftFront = hwMap.dcMotor.get("leftfront");
-            rightFront = hwMap.dcMotor.get("rightfront");
-            leftRear = hwMap.dcMotor.get("leftrear");
-            rightRear = hwMap.dcMotor.get("rightrear");
+            leftFront = hwMap.dcMotor.get("leftFront");
+            rightFront = hwMap.dcMotor.get("rightFront");
+            leftRear = hwMap.dcMotor.get("leftRear");
+            rightRear = hwMap.dcMotor.get("rightRear");
 
-            arm = hwMap.dcMotor.get("arm");
+            arm = hwMap.dcMotor.get("intakeArm");
 
-            rightLift = hwMap.dcMotor.get("rightlift");
-            leftLift = hwMap.dcMotor.get("leftlift");
+            rightLift = hwMap.dcMotor.get("rightSlide");
+            leftLift = hwMap.dcMotor.get("leftSlide");
 
             shoulder = hwMap.servo.get("shoulder");
 
             intake = hwMap.servo.get("intake");
             claw = hwMap.servo.get("claw");
-            hingeClaw = hwMap.dcMotor.get("hinge");
+            extender = hwMap.dcMotor.get("extender");
 
             pivot = hwMap.servo.get("pivot");
 
-            colorSensor = (NormalizedColorSensor) hwMap.colorSensor.get("color");
+            colorSensor = hwMap.get(NormalizedColorSensor.class, "color");
 
 
             //colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor");
@@ -116,7 +116,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
 
@@ -162,16 +163,18 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
+
+
         public void runIntake() {
             intake.setPosition(0.0);
         }
 
         public void openClaw() {
-            claw.setPosition(0.4);
+            claw.setPosition(0.3);
         }
 
         public void closeClaw() {
-            claw.setPosition(0.7);
+            claw.setPosition(0.0);
         }
 
         public void stopIntake() {
@@ -180,9 +183,6 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         public void rotateArm(int pos, double speed) {
             arm.setPower(speed);
-            if(pos < 0) {
-                pos = 0;
-            }
             arm.setTargetPosition(pos);
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -200,80 +200,60 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
          /* Determines if there's something blue, yellow, or red covering the sensor.
          * @return
          */
-        public boolean sensorBlocked() {
-            float[] colorValues = getColorValues();
-            double red = colorValues[0];
-            double blue = colorValues[1];
-            double green = colorValues[2];
-
-            // Define thresholds to detect colors
-            double redThreshold = 0.3;  // Example threshold for red
-            double blueThreshold = 0.3; // Example threshold for blue
-            double greenThreshold = 0.3; // Example threshold for green
-
-            // You may need to adjust these thresholds based on your sensor and conditions
-
-            // Check if any color value is above the threshold
-            if (red > redThreshold && red > blue && red > green) {
-                return true;  // Red color detected
-            } else if (blue > blueThreshold && blue > red && blue > green) {
-                return true;  // Blue color detected
-            } else if (green > greenThreshold && green > red && green > blue) {
-                return true;  // Yellow color detected (because yellow is a mix of red and green)
-            }
-
-            return false;  // No color detected or not in the threshold range
-        }
-
-
-        public float[] getColorValues() {
-            NormalizedRGBA colors = colorSensor.getNormalizedColors();
-            float[] output = new float[3];
-            output[0] = colors.red;
-            output[1] = colors.blue;
-            output[2] = colors.green;
-            return output;
-        }
-
-        public double getRed() {
-            NormalizedRGBA colors = colorSensor.getNormalizedColors();
-            return colors.red;
-        }
-
-        public double getBlue() {
-            NormalizedRGBA colors = colorSensor.getNormalizedColors();
-            return colors.blue;
-        }
 
         public float getIntensity() {
             NormalizedRGBA colors = colorSensor.getNormalizedColors();
             float[] hsvValues = new float[3];
             Color.colorToHSV(colors.toColor(), hsvValues);
-            return hsvValues[1];
+            return hsvValues[2];
         }
 
-        public float getHue() {
-            NormalizedRGBA colors = colorSensor.getNormalizedColors();
-            float[] hsvValues = new float[3];
-            Color.colorToHSV(colors.toColor(), hsvValues);
-            return hsvValues[0];
-        }
 
 
         // AUTOMATIONS
         public void lowerIntake() {
-
+            rotateArm(800,0.4);
+            shoulder.setPosition(0.7);
         }
 
         public void raiseIntake() {
-
+            rotateArm(-100,0.4);
+            shoulder.setPosition(0.4);
         }
 
+        /**
+         * Set intake arm to vertical
+         * Set intake pan to all the way back on the arm
+         * Set arm to 0
+         * Set sliders to 0
+         */
         public void resetToZero() {
-
+            rotateArm(0,0.4);
         }
 
         public void getSpecFromWall() {
+            liftToPos(1000,0.7);
+            this.waitForTick(300);
+            //rotateExtender(100,0.6);
+            //this.waitForTick(1000);
+            liftToPos(0,0.7);
+        }
+
+        public void rotateExtender(int pos, double speed) {
+            extender.setPower(speed);
+            extender.setTargetPosition(pos);
+            extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        public void transfer() {
+            rotateArm(500,0.4);
+        }
+
+        /**
+         * lifts slider up
+         * brings extender around
+         */
+        public void setScoringPos() {
 
         }
     }

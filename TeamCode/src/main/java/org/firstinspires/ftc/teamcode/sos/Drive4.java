@@ -179,17 +179,20 @@ public class Drive4 extends OpMode {
          }
 
          if(gamepad2.a) {   // toggle intake
-             if(this.intakeOn) {
+             robot.runIntake();
+             /**
+             float intensity = robot.getIntensity();
+             while(intensity > 0.0002) {
                  robot.stopIntake();
-                 intakeOn = false;
              }
-             else {
-                 float intensity = robot.getIntensity();
-                 if(intensity < 0.0002) {
-                     robot.runIntake();
-                     intakeOn = true;
-                 }
-             }
+              **/
+         }
+
+         // if back button, manual override for intake
+
+
+         if(gamepad2.ps) {
+             robot.stopIntake();
          }
 
 

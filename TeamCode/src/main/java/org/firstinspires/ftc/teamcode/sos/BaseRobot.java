@@ -212,13 +212,13 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         // AUTOMATIONS
         public void lowerIntake() {
-            rotateArm(800,0.4);
-            shoulder.setPosition(0.7);
+            rotateArm(820,0.4);
+            shoulder.setPosition(0.45);
         }
 
         public void raiseIntake() {
-            rotateArm(-100,0.4);
-            shoulder.setPosition(0.4);
+            rotateArm(0,0.4);
+            shoulder.setPosition(0.0);
         }
 
         /**
@@ -229,6 +229,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
          */
         public void resetToZero() {
             rotateArm(0,0.4);
+            shoulder.setPosition(0.0);
         }
 
         public void getSpecFromWall() {
@@ -246,7 +247,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
         public void transfer() {
-            rotateArm(500,0.4);
+            shoulder.setPosition(0.3);
+            rotateArm(-250,0.4);
         }
 
         /**

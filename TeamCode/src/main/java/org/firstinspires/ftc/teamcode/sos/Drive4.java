@@ -16,10 +16,8 @@ public class Drive4 extends OpMode {
 
     BaseRobot robot = new BaseRobot();
 
-    double clawOffset  = 0.0 ;                  // Servo mid position
-    final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
 
-    int slidePos = 0;
+    int sliderPos;
     int armRotPos = 0;
 
     int highBucketPos = 3100;
@@ -58,6 +56,8 @@ public class Drive4 extends OpMode {
         armRotPos = robot.arm.getCurrentPosition();
 
         robot.openClaw();
+
+        sliderPos = robot.rightLift.getCurrentPosition();
     }
 
     /*
@@ -125,18 +125,28 @@ public class Drive4 extends OpMode {
 
          // GAMEPAD 2 ***********************************************************
 
-         // Slider
-         double slidePower = gamepad2.right_trigger - gamepad2.left_trigger;
-         if(slidePower > 0.1) {
-         slidePos += (gamepad2.right_trigger * 100);
-         }
-         if(slidePower < -0.1) {
-         slidePos -= (gamepad2.left_trigger * 100);
-         }
-
-         if(slidePos < 0) {
-         slidePos = 0;
-         }
+        // Right Arm (Slider) Code
+        if (gamepad2.right_trigger > 0.1) { // Arm Up
+            robot.rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.rightLift.setPower(0.8);
+            robot.leftLift.setPower(0.8);
+        }
+        else if (gamepad2.left_trigger > 0.1) { // Arm Down
+            robot.rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.rightLift.setPower(-0.8);
+            robot.leftLift.setPower(-0.8);
+        }
+        else {
+            sliderPos = robot.rightLift.getCurrentPosition();
+            robot.rightLift.setTargetPosition(sliderPos);
+            robot.leftLift.setTargetPosition(sliderPos);
+            robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightLift.setPower(0.8);
+            robot.leftLift.setPower(0.8);
+        }
 
          //double extendPos = gamepad1.right_trigger - gamepad1.left_trigger;
          //robot.manualExtenderMove(extendPos * 10);
@@ -146,25 +156,23 @@ public class Drive4 extends OpMode {
          }
 
          if(gamepad2.right_bumper) {    // high bumper position
-            slidePos = highBucketPos;
-
-             robot.leftLift.setTargetPosition(slidePos);
-             robot.rightLift.setTargetPosition(slidePos);
+             robot.leftLift.setTargetPosition(3100);
+             robot.rightLift.setTargetPosition(3100);
              //telemetry.addData("Say", "SlidePos: " + slidePos);
              robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
              robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
              robot.leftLift.setPower(0.8);
              robot.rightLift.setPower(0.8);
 
-            robot.waitForTick(1400);
+             robot.waitForTick(1400);
+             robot.setScoringPos();
+            robot.waitForTick(2000);
             robot.setScoringPos();
          }
 
          if(gamepad2.left_bumper) { // low bumper position
-            slidePos = 1000;
-
-             robot.leftLift.setTargetPosition(slidePos);
-             robot.rightLift.setTargetPosition(slidePos);
+             robot.leftLift.setTargetPosition(1000);
+             robot.rightLift.setTargetPosition(1000);
              //telemetry.addData("Say", "SlidePos: " + slidePos);
              robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
              robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -175,9 +183,8 @@ public class Drive4 extends OpMode {
             robot.setScoringPos();
             robot.waitForTick(1000);
 
-            slidePos = 0;
-             robot.leftLift.setTargetPosition(slidePos);
-             robot.rightLift.setTargetPosition(slidePos);
+             robot.leftLift.setTargetPosition(0);
+             robot.rightLift.setTargetPosition(0);
              //telemetry.addData("Say", "SlidePos: " + slidePos);
              robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
              robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -215,25 +222,38 @@ public class Drive4 extends OpMode {
         }
 
          if(gamepad2.dpad_left) {
-             slidePos = 0;
-             robot.rotateArm(200,0.4);
-             robot.waitForTick(300);
-             robot.resetToZero();
-         }
-
-         // Spec
-         if(gamepad2.dpad_right) {
-             slidePos = 1000;
-
-             robot.leftLift.setTargetPosition(slidePos);
-             robot.rightLift.setTargetPosition(slidePos);
+             robot.leftLift.setTargetPosition(0);
+             robot.rightLift.setTargetPosition(0);
              //telemetry.addData("Say", "SlidePos: " + slidePos);
              robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
              robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
              robot.leftLift.setPower(0.8);
              robot.rightLift.setPower(0.8);
 
-             robot.getSpecFromWall();   // todo
+
+             robot.resetToZero();
+
+             robot.leftLift.setTargetPosition(0);
+             robot.rightLift.setTargetPosition(0);
+             //telemetry.addData("Say", "SlidePos: " + slidePos);
+             robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.leftLift.setPower(0.8);
+             robot.rightLift.setPower(0.8);
+
+         }
+
+         // Spec
+         if(gamepad2.dpad_right) {
+             robot.leftLift.setTargetPosition(1000);
+             robot.rightLift.setTargetPosition(1000);
+             //telemetry.addData("Say", "SlidePos: " + slidePos);
+             robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.leftLift.setPower(0.8);
+             robot.rightLift.setPower(0.8);
+
+             robot.getSpecFromWall();
          }
 
          // Grasper
@@ -248,14 +268,6 @@ public class Drive4 extends OpMode {
             robot.transfer();
         }
 
-
-        robot.leftLift.setTargetPosition(slidePos);
-        robot.rightLift.setTargetPosition(slidePos);
-        telemetry.addData("Say", "SlidePos: " + slidePos);
-        robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.leftLift.setPower(0.8);
-        robot.rightLift.setPower(0.8);
 
     }
 

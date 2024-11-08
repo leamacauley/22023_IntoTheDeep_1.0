@@ -154,8 +154,6 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
          * @param speed
          */
         public void liftToPos(int pos, double speed) {
-            rightLift.setPower(speed);
-            leftLift.setPower(speed);
             rightLift.setTargetPosition(pos);
             leftLift.setTargetPosition(pos);
             if(pos < 0) {
@@ -163,6 +161,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             }
             leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightLift.setPower(speed);
+            leftLift.setPower(speed);
         }
 
 
@@ -184,9 +184,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
         public void rotateArm(int pos, double speed) {
-            arm.setPower(speed);
             arm.setTargetPosition(pos);
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            arm.setPower(speed);
         }
          /* Determines if there's something blue, yellow, or red covering the sensor.
          * @return
@@ -219,6 +219,17 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
          * Set sliders to 0
          */
         public void resetToZero() {
+            leftLift.setTargetPosition(0);
+            rightLift.setTargetPosition(0);
+            //telemetry.addData("Say", "SlidePos: " + slidePos);
+            leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftLift.setPower(0.8);
+            rightLift.setPower(0.8);
+
+            rotateArm(200,0.4);
+            waitForTick(300);
+
             shoulder.setPosition(0.0);
             rotateExtender(-100,0.9);
             waitForTick(1000);
@@ -235,15 +246,11 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
         public void rotateExtender(int pos, double speed) {
             extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            extender.setTargetPosition(5000);
+            extender.setTargetPosition(pos);
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             extender.setPower(0.8);
         }
 
-        public void manualExtenderMove(double i) {
-            extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            extender.setPower(i);
-        }
 
         public void transfer() {
             shoulder.setPosition(0.3);
@@ -257,7 +264,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         public void setScoringPos() {
             rotateArm(200,0.6);
             waitForTick(300);
-            rotateExtender(2500,1);
+            rotateExtender(2400,1);
         }
     }
 

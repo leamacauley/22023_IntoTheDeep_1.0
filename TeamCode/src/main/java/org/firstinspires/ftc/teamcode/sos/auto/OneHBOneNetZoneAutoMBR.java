@@ -14,9 +14,9 @@ import org.firstinspires.ftc.teamcode.sos.BaseRobot;
  * !!!NON-ROADRUNNER!!!
  */
 
-@Autonomous(name="One High Bucket", group="Auto")
+@Autonomous(name="One High Bucket One Net", group="Auto")
 
-public class OneHighBucketAutoMBR extends LinearOpMode {
+public class OneHBOneNetZoneAutoMBR extends LinearOpMode {
     // For Encoder Functions
     private double     COUNTS_PER_MOTOR_REV          = 1440 ;    // eg: TETRIX Motor Encoder
     private final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
@@ -58,15 +58,22 @@ public class OneHighBucketAutoMBR extends LinearOpMode {
         robot.waitForTick(300);
         robot.openClaw();
         robot.waitForTick(1000);
-        driveStraightInches(0.3,-10,300);
+        driveStraightInches(0.3,-6,300);
         robot.waitForTick(1000);
 
         robot.shoulder.setPosition(0.0);
         robot.rotateExtender(-100,0.9);
         robot.waitForTick(1000);
-        robot.rotateArm(0,0.4);
         robot.liftToPos(0,0.8);
-        robot.waitForTick(4000);
+        robot.waitForTick(2000);
+
+        robot.rotateArm(0,0.4);
+        robot.waitForTick(2000);
+
+        pointTurnDegrees(0.6,-90,300);
+        strafeInches(0.6,15,300);
+        driveStraightInches(0.5,8,300);
+        strafeInches(0.6,-40,500);
 
 
         // Autonomous Finished

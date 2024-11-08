@@ -119,6 +119,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+            extender.setDirection(DcMotorSimple.Direction.REVERSE);
+
         }
 
         /**
@@ -170,7 +172,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
         public void openClaw() {
-            claw.setPosition(0.3);
+            claw.setPosition(0.2);
         }
 
         public void closeClaw() {
@@ -186,17 +188,6 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             arm.setTargetPosition(pos);
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-
-        public void rotateShoulder(double pos) {
-            shoulder.setPosition(pos);
-        }
-
-        public void rotateClaw(double pos) {
-            pivot.setPosition(pos);
-        }
-
-
-
          /* Determines if there's something blue, yellow, or red covering the sensor.
          * @return
          */
@@ -228,22 +219,30 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
          * Set sliders to 0
          */
         public void resetToZero() {
-            rotateArm(0,0.4);
             shoulder.setPosition(0.0);
+            rotateExtender(-100,0.9);
+            waitForTick(1000);
+            rotateArm(0,0.4);
         }
 
         public void getSpecFromWall() {
-            liftToPos(1000,0.7);
-            this.waitForTick(300);
-            //rotateExtender(100,0.6);
-            //this.waitForTick(1000);
-            liftToPos(0,0.7);
+            rotateArm(300,0.6);
+            waitForTick(1300);
+            rotateExtender(3000,1);
+            waitForTick(300);
+            //liftToPos(0,0.7);
         }
 
         public void rotateExtender(int pos, double speed) {
-            extender.setPower(speed);
-            extender.setTargetPosition(pos);
+            extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            extender.setTargetPosition(5000);
             extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            extender.setPower(0.8);
+        }
+
+        public void manualExtenderMove(double i) {
+            extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            extender.setPower(i);
         }
 
         public void transfer() {
@@ -256,7 +255,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
          * brings extender around
          */
         public void setScoringPos() {
-
+            rotateArm(200,0.6);
+            waitForTick(300);
+            rotateExtender(2500,1);
         }
     }
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sos;
+package org.firstinspires.ftc.teamcode.sos.obsolete;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

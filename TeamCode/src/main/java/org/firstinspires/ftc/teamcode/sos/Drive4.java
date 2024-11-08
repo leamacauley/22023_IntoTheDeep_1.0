@@ -22,7 +22,7 @@ public class Drive4 extends OpMode {
     int slidePos = 0;
     int armRotPos = 0;
 
-    int highBucketPos = 2000;
+    int highBucketPos = 3100;
     private double SPEED_CONTROL = 0.8;
 
     boolean intakeOn = false;
@@ -57,8 +57,7 @@ public class Drive4 extends OpMode {
 
         armRotPos = robot.arm.getCurrentPosition();
 
-        robot.closeClaw();
-
+        robot.openClaw();
     }
 
     /*
@@ -127,23 +126,6 @@ public class Drive4 extends OpMode {
          // GAMEPAD 2 ***********************************************************
 
          // Slider
-         if(slidePos > 3210) {  // safety code
-         slidePos = 2210;
-         }
-         if(slidePos < 0) {
-         slidePos = 0;
-         }
-
-         robot.leftLift.setTargetPosition(slidePos);
-         robot.rightLift.setTargetPosition(slidePos);
-         telemetry.addData("Say", "SlidePos: " + slidePos);
-         robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-         robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-         robot.leftLift.setPower(0.8);
-         robot.rightLift.setPower(0.8);
-
-
-         // Slider
          double slidePower = gamepad2.right_trigger - gamepad2.left_trigger;
          if(slidePower > 0.1) {
          slidePos += (gamepad2.right_trigger * 100);
@@ -152,21 +134,55 @@ public class Drive4 extends OpMode {
          slidePos -= (gamepad2.left_trigger * 100);
          }
 
-         if(slidePos > 3210) {  // safety code
-         slidePos = 2210;
-         }
-
          if(slidePos < 0) {
          slidePos = 0;
          }
 
+         //double extendPos = gamepad1.right_trigger - gamepad1.left_trigger;
+         //robot.manualExtenderMove(extendPos * 10);
+
+         if(gamepad1.y) {
+             robot.rotateExtender(2500,0.7);
+         }
+
          if(gamepad2.right_bumper) {    // high bumper position
-            robot.liftToPos(highBucketPos,0.7);
-            // robot.rotateExtender(
+            slidePos = highBucketPos;
+
+             robot.leftLift.setTargetPosition(slidePos);
+             robot.rightLift.setTargetPosition(slidePos);
+             //telemetry.addData("Say", "SlidePos: " + slidePos);
+             robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.leftLift.setPower(0.8);
+             robot.rightLift.setPower(0.8);
+
+            robot.waitForTick(1400);
+            robot.setScoringPos();
          }
 
          if(gamepad2.left_bumper) { // low bumper position
+            slidePos = 1000;
 
+             robot.leftLift.setTargetPosition(slidePos);
+             robot.rightLift.setTargetPosition(slidePos);
+             //telemetry.addData("Say", "SlidePos: " + slidePos);
+             robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.leftLift.setPower(0.8);
+             robot.rightLift.setPower(0.8);
+
+            robot.waitForTick(1400);
+            robot.setScoringPos();
+            robot.waitForTick(1000);
+
+            slidePos = 0;
+             robot.leftLift.setTargetPosition(slidePos);
+             robot.rightLift.setTargetPosition(slidePos);
+             //telemetry.addData("Say", "SlidePos: " + slidePos);
+             robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.leftLift.setPower(0.8);
+             robot.rightLift.setPower(0.8);
          }
 
          // Intake
@@ -178,30 +194,45 @@ public class Drive4 extends OpMode {
              robot.raiseIntake();
          }
 
-         if(gamepad2.a) {   // toggle intake
-             robot.runIntake();
-             /**
-             float intensity = robot.getIntensity();
-             while(intensity > 0.0002) {
-                 robot.stopIntake();
-             }
-              **/
-         }
+         float intensity = robot.getIntensity();
+         telemetry.addData("Color: ", intensity);
+         telemetry.update();
 
-         // if back button, manual override for intake
+        boolean colorDetected = (intensity > 0.0001);
 
-
-         if(gamepad2.ps) {
-             robot.stopIntake();
-         }
-
+        if (gamepad2.a && !colorDetected) {
+            // Manual control: Run intake if button A is pressed and no color is detected
+            robot.runIntake();
+        } else if (gamepad2.ps) {
+            // Manual override: Run intake if the PS button is pressed, regardless of color detection
+            robot.runIntake();
+        } else if (colorDetected) {
+            // Stop intake if color is detected (unless overridden by manual control)
+            robot.stopIntake();
+        } else {
+            // Stop intake by default if none of the above conditions are true
+            robot.stopIntake();
+        }
 
          if(gamepad2.dpad_left) {
-             robot.resetToZero();   // todo
+             slidePos = 0;
+             robot.rotateArm(200,0.4);
+             robot.waitForTick(300);
+             robot.resetToZero();
          }
 
          // Spec
          if(gamepad2.dpad_right) {
+             slidePos = 1000;
+
+             robot.leftLift.setTargetPosition(slidePos);
+             robot.rightLift.setTargetPosition(slidePos);
+             //telemetry.addData("Say", "SlidePos: " + slidePos);
+             robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             robot.leftLift.setPower(0.8);
+             robot.rightLift.setPower(0.8);
+
              robot.getSpecFromWall();   // todo
          }
 
@@ -213,15 +244,18 @@ public class Drive4 extends OpMode {
             robot.closeClaw();
         }
 
-        float trig = gamepad2.right_stick_y;
-        if(trig > 0) {
-            robot.rotateExtender((int) (robot.extender.getCurrentPosition() + trig), 0.6);
-        }
-
         if(gamepad2.start) {
             robot.transfer();
         }
 
+
+        robot.leftLift.setTargetPosition(slidePos);
+        robot.rightLift.setTargetPosition(slidePos);
+        telemetry.addData("Say", "SlidePos: " + slidePos);
+        robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.leftLift.setPower(0.8);
+        robot.rightLift.setPower(0.8);
 
     }
 

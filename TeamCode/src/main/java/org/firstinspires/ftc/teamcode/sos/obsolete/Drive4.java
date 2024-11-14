@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode.sos;
+package org.firstinspires.ftc.teamcode.sos.obsolete;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+
+import org.firstinspires.ftc.teamcode.sos.BaseRobot;
 
 
 //@Config
@@ -148,8 +150,10 @@ public class Drive4 extends OpMode {
             robot.leftLift.setPower(0.8);
         }
 
-         //double extendPos = gamepad1.right_trigger - gamepad1.left_trigger;
-         //robot.manualExtenderMove(extendPos * 10);
+        if(gamepad2.right_stick_y > 0.001 || gamepad2.right_stick_y < -0.001) {
+            double extendPos = gamepad2.right_stick_y;
+            robot.manualExtenderMove(extendPos * 10);
+        }
 
          if(gamepad1.y) {
              robot.rotateExtender(2500,0.7);

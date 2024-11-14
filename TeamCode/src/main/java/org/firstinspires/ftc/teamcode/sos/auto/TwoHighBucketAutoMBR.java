@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.sos.auto;
 
 
 
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,9 +15,9 @@ import org.firstinspires.ftc.teamcode.sos.BaseRobot;
  * !!!NON-ROADRUNNER!!!
  */
 
-@Autonomous(name="One High Bucket One Net", group="Auto")
+@Autonomous(name="Two High Buckets", group="Auto")
 
-public class OneHBOneNetZoneAutoMBR extends LinearOpMode {
+public class TwoHighBucketAutoMBR extends LinearOpMode {
     // For Encoder Functions
     private double     COUNTS_PER_MOTOR_REV          = 1440 ;    // eg: TETRIX Motor Encoder
     private final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
@@ -58,26 +59,58 @@ public class OneHBOneNetZoneAutoMBR extends LinearOpMode {
         robot.waitForTick(300);
         robot.openClaw();
         robot.waitForTick(1000);
+        driveStraightInches(0.3,-13,300);
+        robot.waitForTick(1000);
+
+        robot.shoulder.setPosition(0.0);
+        robot.rotateExtender(-100,0.9);
+        robot.waitForTick(1000);
+        robot.rotateArm(0,0.4);
+        robot.liftToPos(0,0.8);
+        robot.waitForTick(2000);
+
+        pointTurnDegrees(0.6,252,300);
+        driveStraightInches(0.6,3,300);
+        robot.lowerIntake();
+        robot.runIntake();
+        robot.waitForTick(3000);
+        driveStraightInches(0.4,-8,300);
+        robot.stopIntake();
+        robot.waitForTick(1000);
+
+        robot.transfer();
+        robot.waitForTick(1000);
+        robot.runIntake();
+        robot.waitForTick(500);
+        robot.stopIntake();
+
+        driveStraightInches(0.5,3,300);
+        robot.closeClaw();
+        pointTurnDegrees(0.6,-255,300);
+
+        driveStraightInches(0.5,2,300);
+
+        robot.rotateArm(300,0.7);
+        robot.waitForTick(700);
+        robot.liftToPos(3100,0.8);
+
+        robot.waitForTick(300);
+
+        robot.rotateExtender(2400,1);
+
+        driveStraightInches(0.3,9,300);
+        robot.waitForTick(300);
+        robot.openClaw();
+        robot.waitForTick(1000);
         driveStraightInches(0.3,-6,300);
         robot.waitForTick(1000);
 
         robot.shoulder.setPosition(0.0);
         robot.rotateExtender(-100,0.9);
         robot.waitForTick(1000);
+        robot.rotateArm(0,0.4);
         robot.liftToPos(0,0.8);
         robot.waitForTick(2000);
-
-        robot.rotateArm(0,0.4);
-        robot.waitForTick(1500);
-
-        pointTurnDegrees(0.6,-110,300);
-        driveStraightInches(0.6,-3,300);
-        strafeInches(0.6,-40,300);
-        driveStraightInches(0.6,3,300);
-        pointTurnDegrees(0.6,-45,300);
-        strafeInches(0.6,57,300);
-        driveStraightInches(0.6,2,300);
-        strafeInches(0.6,-10,300);
 
 
 

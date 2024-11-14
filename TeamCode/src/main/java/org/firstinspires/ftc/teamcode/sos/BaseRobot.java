@@ -266,6 +266,17 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             waitForTick(300);
             rotateExtender(2400,1);
         }
+
+        public void manualExtenderMove(double v) {
+            int currentPos = extender.getCurrentPosition() + (int)(v*50);
+            if(currentPos < 0) {
+                currentPos = 0;
+            }
+            extender.setTargetPosition(currentPos);
+
+            extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            extender.setPower(0.6);
+        }
     }
 
 

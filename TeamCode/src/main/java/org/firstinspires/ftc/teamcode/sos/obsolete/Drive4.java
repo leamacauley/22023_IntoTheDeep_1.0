@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.sos.obsolete;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.sos.BaseRobot;
 
 
 //@Config
+@Disabled
 @TeleOp (name = "DRIVE CODE V3: ROBOT CENTRIC")
 
 public class Drive4 extends OpMode {

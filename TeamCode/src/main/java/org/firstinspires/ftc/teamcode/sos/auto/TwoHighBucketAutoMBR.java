@@ -69,24 +69,24 @@ public class TwoHighBucketAutoMBR extends LinearOpMode {
         robot.liftToPos(0,0.8);
         robot.waitForTick(2000);
 
-        pointTurnDegrees(0.6,252,300);
+        pointTurnDegrees(0.6,254,300);
         driveStraightInches(0.6,3,300);
         robot.lowerIntake();
         robot.runIntake();
         robot.waitForTick(3000);
-        driveStraightInches(0.4,-8,300);
+        driveStraightInches(0.4,-9,300);
         robot.stopIntake();
         robot.waitForTick(1000);
 
         robot.transfer();
         robot.waitForTick(1000);
         robot.runIntake();
-        robot.waitForTick(500);
+        robot.waitForTick(1000);
         robot.stopIntake();
 
-        driveStraightInches(0.5,3,300);
+        driveStraightInches(0.5,4,300);
         robot.closeClaw();
-        pointTurnDegrees(0.6,-255,300);
+        pointTurnDegrees(0.6,-253,300);
 
         driveStraightInches(0.5,2,300);
 

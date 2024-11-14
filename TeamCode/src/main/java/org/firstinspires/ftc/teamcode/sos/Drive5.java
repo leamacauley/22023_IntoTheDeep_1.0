@@ -6,9 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 
 //@Config
-@TeleOp (name = "Click this one")
+@TeleOp (name = "FIELD CENTRIC DRIVE CODE")
 
 public class Drive5 extends OpMode {
 
@@ -16,7 +18,7 @@ public class Drive5 extends OpMode {
 
     BaseRobot robot = new BaseRobot();
 
-
+    IMU imu;
 
     int sliderPos;
     int armRotPos = 0;
@@ -35,8 +37,13 @@ public class Drive5 extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
+        // Initialize hardware
         robot.init(hardwareMap);
-
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
+        imu.initialize(parameters);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Robot Ready");
 
@@ -59,6 +66,7 @@ public class Drive5 extends OpMode {
         robot.openClaw();
 
         sliderPos = robot.rightLift.getCurrentPosition();
+
     }
 
     /*
@@ -83,46 +91,38 @@ public class Drive5 extends OpMode {
     @Override
     public void loop() {
 
-        // Retrieve the IMU from the hardware map
-        IMU imu = hardwareMap.get(IMU.class, "imu");
-        // Adjust the orientation parameters to match your robot
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-        imu.initialize(parameters);
+            double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double x = - gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
 
+            // This button choice was made so that it is hard to hit on accident,
+            // it can be freely changed based on preference.
+            // The equivalent button is start on Xbox-style controllers.
+            if (gamepad1.options) {
+                imu.resetYaw();
+            }
 
-        // GAMEPAD 1 ***********************************************************
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
+            // Rotate the movement direction counter to the bot's rotation
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        // SLOW MODE
-        if(gamepad1.right_trigger >= 0.1) {
-            SPEED_CONTROL = 0.3;
-        }
-        else{
-            SPEED_CONTROL = 0.8;
-        }
+            rotX = rotX * 1.1;  // Counteract imperfect strafing
 
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            double frontLeftPower = (rotY + rotX + rx) / denominator;
+            double backLeftPower = (rotY - rotX + rx) / denominator;
+            double frontRightPower = (rotY - rotX - rx) / denominator;
+            double backRightPower = (rotY + rotX - rx) / denominator;
 
-        // Movement
-        double leftX;
-        double leftY;
-        double rightX;
-
-        leftX = -gamepad1.left_stick_x;
-        leftY = -gamepad1.left_stick_y ;
-        rightX = -gamepad1.right_stick_x;
-
-        double leftRearPower = (leftY + leftX - rightX);
-        double leftFrontPower = (leftY - leftX - rightX);
-        double rightRearPower = (leftY - leftX + rightX);
-        double rightFrontPower = (leftY + leftX + rightX);
-
-        robot.leftFront.setPower(leftFrontPower * SPEED_CONTROL);
-        robot.leftRear.setPower(leftRearPower * SPEED_CONTROL);
-        robot.rightFront.setPower(rightFrontPower * SPEED_CONTROL);
-        robot.rightRear.setPower(rightRearPower * SPEED_CONTROL);
+            robot.leftFront.setPower(frontLeftPower);
+            robot.leftRear.setPower(backLeftPower);
+            robot.rightFront.setPower(frontRightPower);
+            robot.rightRear.setPower(backRightPower);
 
 
         // GAMEPAD 2 ***********************************************************

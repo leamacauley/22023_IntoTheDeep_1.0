@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.sos.BaseRobot;
  * Sample parking method using the Marist Base Robot Code
  * !!!NON-ROADRUNNER!!!
  */
+@Disabled
 @Autonomous(name="Observation Park", group="Auto")
 
 public class ObservationZonePark extends LinearOpMode {

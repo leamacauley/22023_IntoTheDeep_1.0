@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         public Servo intake = null;
         public Servo claw = null;
 
+        public Servo specGrasper = null;
+
         public DcMotor extender = null;
 
         /* Public Sensors */
@@ -85,6 +87,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             extender = hwMap.dcMotor.get("extender");
 
             pivot = hwMap.servo.get("pivot");
+            specGrasper = hwMap.servo.get("specGrasper");
 
             colorSensor = hwMap.get(NormalizedColorSensor.class, "color");
 
@@ -166,7 +169,10 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
 
-
+        public void openSpecGrasper() { specGrasper.setPosition(0.21);
+        }
+        public void closeSpecGrasper() { specGrasper.setPosition(0.12);
+        }
         public void runIntake() {
             intake.setPosition(0.0);
         }
@@ -236,13 +242,12 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
             rotateArm(0,0.4);
         }
 
-        public void getSpecFromWall() {
-            rotateArm(300,0.6);
-            waitForTick(1300);
-            rotateExtender(3000,1);
+        public void putOnBar() {
+            liftToPos(1800,0.8);
             waitForTick(300);
-            //liftToPos(0,0.7);
         }
+
+
 
         public void rotateExtender(int pos, double speed) {
             extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

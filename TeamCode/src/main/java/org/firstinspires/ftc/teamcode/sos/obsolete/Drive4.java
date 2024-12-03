@@ -259,7 +259,7 @@ public class Drive4 extends OpMode {
              robot.leftLift.setPower(0.8);
              robot.rightLift.setPower(0.8);
 
-             robot.getSpecFromWall();
+             //robot.getSpecFromWall();
          }
 
          // Grasper

@@ -66,6 +66,7 @@ public class Drive5 extends OpMode {
         robot.openClaw();
 
         sliderPos = robot.rightLift.getCurrentPosition();
+        //robot.pivot.setPosition(0.0);
 
     }
 
@@ -119,10 +120,16 @@ public class Drive5 extends OpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
-            robot.leftFront.setPower(frontLeftPower);
-            robot.leftRear.setPower(backLeftPower);
-            robot.rightFront.setPower(frontRightPower);
-            robot.rightRear.setPower(backRightPower);
+            if(gamepad1.right_trigger > 0.01) {
+                SPEED_CONTROL = 0.2;
+            }
+            else {
+                SPEED_CONTROL = 0.8;
+            }
+            robot.leftFront.setPower(frontLeftPower * SPEED_CONTROL);
+            robot.leftRear.setPower(backLeftPower * SPEED_CONTROL);
+            robot.rightFront.setPower(frontRightPower * SPEED_CONTROL);
+            robot.rightRear.setPower(backRightPower * SPEED_CONTROL);
 
 
         // GAMEPAD 2 ***********************************************************
@@ -249,22 +256,16 @@ public class Drive5 extends OpMode {
 
         // Spec
         if(gamepad2.dpad_right) {
-            robot.leftLift.setTargetPosition(1000);
-            robot.rightLift.setTargetPosition(1000);
-            //telemetry.addData("Say", "SlidePos: " + slidePos);
-            robot.leftLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.leftLift.setPower(0.8);
-            robot.rightLift.setPower(0.8);
-
-            robot.getSpecFromWall();
+            robot.putOnBar();
         }
 
         // Grasper
         if(gamepad2.x) {    //open grasper
             robot.openClaw();
+            robot.openSpecGrasper();
         }
         if(gamepad2.b) {    // close grasper
+            robot.closeSpecGrasper();
             robot.closeClaw();
         }
 

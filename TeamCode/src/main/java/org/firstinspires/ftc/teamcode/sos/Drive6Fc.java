@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp (name = "field centric tests")
+@TeleOp (name = "field centric sample - NO")
 
 public class Drive6Fc extends LinearOpMode {
     @Override

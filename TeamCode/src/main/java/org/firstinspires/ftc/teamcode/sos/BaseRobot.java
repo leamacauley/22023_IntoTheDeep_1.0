@@ -243,7 +243,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         }
 
         public void putOnBar() {
-            liftToPos(1800,0.8);
+            liftToPos(1700,0.8);
             waitForTick(300);
         }
 

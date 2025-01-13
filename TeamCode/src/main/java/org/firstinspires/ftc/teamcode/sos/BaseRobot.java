@@ -18,6 +18,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
     public class BaseRobot {
+        /**
+         * HEY
+         */
         /* Public Motors and Servos */
         public DcMotor leftFront = null;
         public DcMotor rightFront = null;
@@ -210,7 +213,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
         // AUTOMATIONS
         public void lowerIntake() {
             rotateArm(820,0.4);
-            shoulder.setPosition(0.45);
+            shoulder.setPosition(0.40);
         }
 
         public void raiseIntake() {

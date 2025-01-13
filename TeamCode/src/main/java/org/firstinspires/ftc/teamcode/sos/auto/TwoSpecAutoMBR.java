@@ -56,7 +56,7 @@ public class TwoSpecAutoMBR extends LinearOpMode {
         strafeInches(0.6,-11,200);
         robot.waitForTick(200);
         robot.liftToPos(1000,0.8);
-        robot.waitForTick(300);
+        robot.waitForTick(370);
         robot.openSpecGrasper();
         robot.waitForTick(200);
 
@@ -68,7 +68,7 @@ public class TwoSpecAutoMBR extends LinearOpMode {
 
         pointTurnDegrees(0.5,500,200);
         robot.waitForTick(400);
-        strafeInches(0.7,-31,200);
+        strafeInches(0.4,-31,200);
         robot.waitForTick(400);
         // End of first one
 
@@ -88,12 +88,12 @@ public class TwoSpecAutoMBR extends LinearOpMode {
 
 
         robot.liftToPos(1950,0.8);
-        robot.waitForTick(400);
-        strafeInches(0.7,-16,200);
-        robot.waitForTick(400);
+        robot.waitForTick(700);
+        strafeInches(0.7,-8,400);
+        robot.waitForTick(600);
 
         robot.liftToPos(1000,0.8);
-        robot.waitForTick(375);
+        robot.waitForTick(400);
         robot.openSpecGrasper();
         robot.waitForTick(200);
         strafeInches(0.7,10,200);
@@ -104,7 +104,11 @@ public class TwoSpecAutoMBR extends LinearOpMode {
         driveStraightInches(0.8,-13,200);
         robot.waitForTick(200);
 
-        strafeInches(0.8,20,200);
+        strafeInches(0.8,15,200);
+        robot.waitForTick(200);
+        pointTurnDegrees(0.8,-230,200);
+        robot.waitForTick(200);
+        driveStraightInches(0.9,-2,200);
 
 
         // Autonomous Finished
